@@ -1,7 +1,7 @@
 Time::Monotonic
 ===============
 
-### Incrementing clock source
+### Monotonically incrementing clock source for Perl
 
 Time::Monotonic gives access to monotonic clocks on various platforms (Mac
 OS X, Windows, and POSIX). A monotonic clock is a time source that won't
