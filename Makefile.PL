@@ -1,5 +1,15 @@
 use ExtUtils::MakeMaker;
 
+if (-d ".git") { # Are we in our development tree? If so, create MANIFEST.
+    my ($dir, $manifest);
+    open $manifest, ">", "MANIFEST" or die "MANIFEST: $!";
+    print $manifest "MANIFEST\n";
+    open $dir, '-|', 'git', 'ls-files' or die "Couldn't run git: $!";
+    while (<$dir>) { print $manifest $_ unless /^\.|^monotonic_clock/ }
+    open $dir, '-|', 'cd monotonic_clock && git ls-files' or die "Couldn't run git in monotonic_clock: $!";
+    while (<$dir>) { print $manifest "monotonic_clock/$_" unless /^\./ }
+}
+
 WriteMakefile(
     NAME              => 'Time::Monotonic',
     VERSION_FROM      => 'lib/Time/Monotonic.pm',
