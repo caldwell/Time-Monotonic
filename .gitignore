@@ -1,0 +1,9 @@
+Monotonic.c
+Monotonic.o
+Monotonic.bs
+blib/
+*~
+Makefile
+Makefile.old
+META.*
+MYMETA.*
