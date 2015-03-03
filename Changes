@@ -1,3 +1,10 @@
+Time::Monotonic (0.9.2)
+
+  * Migrate to Module::Build in order to get Windows to work. Hopefully
+    this will help the failing Linux builds, too.
+
+ -- David Caldwell <david@porkrind.org>  Tue, 03 Mar 2015 12:26:09 -0800
+
 Time::Monotonic (0.9.1)
 
   * Fix shared library issues w/gcc on linux.
