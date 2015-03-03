@@ -51,7 +51,7 @@ WriteMakefile(
 sub MY::postamble {
 '
 $(MYEXTLIB): monotonic_clock/configure Makefile.PL
-	cd monotonic_clock && CFLAGS="$(CCFLAGS) -fPIC" ./configure && $(MAKE) all
+	cd monotonic_clock && CFLAGS="$(CCFLAGS) $(CCCDLFLAGS)" ./configure && $(MAKE) all
 
 monotonic_clock/configure: monotonic_clock/configure.ac
 	cd monotonic_clock && ./bootstrap.sh
