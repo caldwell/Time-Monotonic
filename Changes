@@ -1,3 +1,10 @@
+Time::Monotonic (0.9.3)
+
+  * Stop passing C files to the compiler with the -I option. Some
+    compilers consider this an error (while others only warn).
+
+ -- David Caldwell <david@porkrind.org>  Tue, 03 Mar 2015 14:29:03 -0800
+
 Time::Monotonic (0.9.2)
 
   * Migrate to Module::Build in order to get Windows to work. Hopefully
