@@ -55,5 +55,7 @@ $(MYEXTLIB): monotonic_clock/configure Makefile.PL
 
 monotonic_clock/configure: monotonic_clock/configure.ac
 	cd monotonic_clock && ./bootstrap.sh
+
+distdir: monotonic_clock/configure
 '
 }
