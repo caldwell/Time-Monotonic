@@ -14,7 +14,19 @@ if (-d ".git") { # Are we in our development tree? If so, create MANIFEST.
     while (<$dir>) { print $manifest "monotonic_clock/$_" unless /^\./ }
 }
 
-my $builder = Module::Build->new(
+# This hacks around the fact that we are using c_source to store files, when Module::Build expects directories.
+my $custom = Module::Build->subclass(
+    class => 'My::Builder',
+    code  => <<'CUSTOM_CODE');
+sub compile_c {
+  my ($self, $file, %args) = @_;
+  # Adding to c_source adds to include_dirs, too. Since we're adding files, remove them.
+  @{$self->include_dirs} = grep { !/\.c$/ } @{$self->include_dirs};
+  $self->SUPER::compile_c($file, %args);
+}
+CUSTOM_CODE
+
+my $builder = $custom->new(
     module_name         => 'Time::Monotonic',
     license             => 'perl',
     dist_author         => 'David Caldwell <david@porkrind.org>',
