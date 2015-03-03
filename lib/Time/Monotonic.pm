@@ -30,7 +30,7 @@ sub is_monotonic {
 __END__
 
 =head1 NAME
-Time::Monotonic - Incrementing clock source
+Time::Monotonic - A clock source that only increments and never jumps
 
 =head1 SYNOPSIS
 
