@@ -26,6 +26,63 @@ sub compile_c {
 }
 CUSTOM_CODE
 
+# autoconf style feature tester. Can't believe someone hasn't written this yet...
+use ExtUtils::CBuilder;
+my $cb = ExtUtils::CBuilder->new(quiet=>1);
+
+sub test_function_lib {
+    my ($function, $lib) = @_;
+    my $source = 'conf_test.c';
+    open my $conf_test, '>', $source or return;
+    print $conf_test <<"C_CODE";
+int main() {
+    int $function();
+    return $function();
+}
+C_CODE
+    close $conf_test;
+
+    my $conf_log='conf_test.log';
+    my @saved_fhs = eval {
+        open(my $oldout, ">&", \*STDOUT) or return;
+        open(my $olderr, ">&", \*STDERR) or return;
+        open(STDOUT, '>>', $conf_log) or return;
+        open(STDERR, ">>", $conf_log) or return;
+        ($oldout, $olderr)
+    };
+
+    my $worked = eval {
+        my $obj = $cb->compile(source=>$source);
+        my @junk = $cb->link_executable(objects => $obj, extra_linker_flags=>$lib);
+        unlink $_ for (@junk, $obj, $source, $conf_log);
+        return 1;
+    };
+
+    if (@saved_fhs) {
+        open(STDOUT, ">&", $saved_fhs[0]) or return;
+        open(STDERR, ">&", $saved_fhs[1]) or return;
+        close($_) for (@saved_fhs);
+    }
+
+    $worked
+}
+
+my $have_gettimeofday = test_function_lib("gettimeofday", "");
+
+my $backend;
+for (["clock_gettime", ""],
+     ["clock_gettime", "-lrt"],
+     ["mach_absolute_time", ""],
+     #["QueryPerformanceCounter", ""], # Doesn't work: win32 seems to mangle names, even in C code.
+     ["time", ""],
+    ) {
+    if (test_function_lib(@$_)) {
+        $backend = join(' ', @$_);
+        last
+    }
+}
+die "os unsupported" unless $backend;
+
 my $builder = $custom->new(
     module_name         => 'Time::Monotonic',
     license             => 'perl',
@@ -43,21 +100,15 @@ my $builder = $custom->new(
         repository  => 'https://github.com/caldwell/Time-Monotonic',
       },
     },
-    extra_compiler_flags => '-DHAVE_GETTIMEOFDAY', # We're going to assume everyone is at least that modern
+    extra_compiler_flags => $have_gettimeofday ? '-DHAVE_GETTIMEOFDAY' : '',
+    extra_linker_flags => $backend =~ /-lrt/ ? '-lrt' : '',
     include_dirs => 'monotonic_clock/include',
-    c_source     => ['monotonic_clock/src/monotonic_common.c'],
+    c_source     => ['monotonic_clock/src/monotonic_common.c',
+                     $backend =~ /clock_gettime/      ? 'monotonic_clock/src/monotonic_clock.c' :
+                     $backend =~ /mach_absolute_time/ ? 'monotonic_clock/src/monotonic_mach.c'  :
+                     $^O =~ /win32/i                  ? 'monotonic_clock/src/monotonic_win32.c' :
+                                                        'monotonic_clock/src/monotonic_generic.c'
+                    ],
 );
-
-# Add the appropriate platform-specific backend.
-#
-# This isn't as good as the configure script that comes with
-# monotonic_clock, since it actually tests for the feature instead of
-# assuming that non-darwin unixes support POSIX clock_gettime. On the other
-# hand, this handles windows.
-push(@{$builder->c_source},
-     $^O                 eq 'darwin'  ? 'monotonic_clock/src/monotonic_mach.c' :
-     $builder->os_type() eq 'Windows' ? 'monotonic_clock/src/monotonic_win32.c' :
-     $builder->os_type() eq 'Unix'    ? 'monotonic_clock/src/monotonic_clock.c' :
-                                        'monotonic_clock/src/monotonic_generic.c');
 
 $builder->create_build_script();
