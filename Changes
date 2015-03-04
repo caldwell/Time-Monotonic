@@ -1,3 +1,10 @@
+Time::Monotonic (0.9.4)
+
+  * Detect when linux needs -lrt.
+  * Don't use gettimeofday unless it's supported.
+
+ -- David Caldwell <david@porkrind.org>  Wed, 04 Mar 2015 03:18:02 -0800
+
 Time::Monotonic (0.9.3)
 
   * Stop passing C files to the compiler with the -I option. Some
