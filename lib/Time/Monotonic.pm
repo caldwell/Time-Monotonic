@@ -26,6 +26,20 @@ sub is_monotonic {
     Time::Monotonic::monotonic_clock_is_monotonic();
 }
 
+sub new {
+    my $class = shift;
+    my ($offset) = @_;
+    $offset //= 0;
+    my $now = monotonic_time();
+    $now += $offset;
+    bless \$now => ref $class || $class;
+}
+
+sub now {
+    my $self = shift;
+    return monotonic_time() - $$self;
+}
+
 1;
 __END__
 
@@ -41,6 +55,9 @@ Time::Monotonic - A clock source that only increments and never jumps
 
   die unless Time::Monotonic::is_monotonic();
   say "Backend API: ".Time::Monotonic::backend();
+
+  $oo = Time::Monotonic->new;
+  $oo->now;
 
 =head1 DESCRIPTION
 
@@ -87,6 +104,26 @@ return false if there is no support for monotonic clocks in the current
 Platform/OS/hardware combo.
 
 =back
+
+=head1 OO Interface
+
+Creating a new instance of ourself stores the current monotonic counter
+value as a blessed scalar reference.  Consecutive calls to
+C<<$instance->now>> returns the time difference since the moment of
+instanciation.  This behavior is equivalent to L<Time::HiRes/tv_interval>.
+
+  my $t0 = Time::Monotonic->new;
+  my $t1 = $t0->now;
+
+The constructor also accepts an offset value, which will be added to the
+counter value.
+
+  my $t0 = Time::Monotonic->new($offset);
+  my $t1 = $t0->now;
+
+Deferencing returns the initial value:
+
+  print "timer started at: ", $$t0;
 
 =head1 SEE ALSO
 
