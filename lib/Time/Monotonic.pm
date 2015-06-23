@@ -9,7 +9,7 @@ package Time::Monotonic;
 use Exporter 'import';
 our @EXPORT_OK = qw(monotonic_time);
 
-our $VERSION = 'v0.9.5';
+our $VERSION = 'v0.9.6';
 
 require XSLoader;
 XSLoader::load('Time::Monotonic', $VERSION);
