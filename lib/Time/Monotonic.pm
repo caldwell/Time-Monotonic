@@ -110,7 +110,7 @@ Platform/OS/hardware combo.
 Creating a new instance of ourself stores the current monotonic counter
 value as a blessed scalar reference.  Consecutive calls to
 C<<$instance->now>> returns the time difference since the moment of
-instanciation.  This behavior is equivalent to L<Time::HiRes/tv_interval>.
+instantiation. This behavior is equivalent to L<Time::HiRes/tv_interval>.
 
   my $t0 = Time::Monotonic->new;
   my $t1 = $t0->now;
@@ -121,7 +121,7 @@ counter value.
   my $t0 = Time::Monotonic->new($offset);
   my $t1 = $t0->now;
 
-Deferencing returns the initial value:
+Dereferencing returns the initial value:
 
   print "timer started at: ", $$t0;
 
