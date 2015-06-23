@@ -27,11 +27,8 @@ sub is_monotonic {
 }
 
 sub new {
-    my $class = shift;
-    my ($offset) = @_;
-    $offset //= 0;
-    my $now = monotonic_time();
-    $now += $offset;
+    my ($class, $offset) = @_;
+    my $now = monotonic_time() + ($offset // 0);
     bless \$now => ref $class || $class;
 }
 
