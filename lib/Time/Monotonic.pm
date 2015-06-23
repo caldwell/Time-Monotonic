@@ -109,7 +109,7 @@ Platform/OS/hardware combo.
 
 Creating a new instance of Time::Monotonic stores the current monotonic
 counter value as a blessed scalar reference. Consecutive calls to
-C<<$instance->now>> returns the time difference since the moment of
+C<< $instance->now >> returns the time difference since the moment of
 instantiation. This behavior is equivalent to L<Time::HiRes/tv_interval>.
 
   my $t0 = Time::Monotonic->new;
