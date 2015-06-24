@@ -20,7 +20,7 @@ cmp_ok($t1, '>', $t0, '$mono increments again');
 
 my $t2 = Time::Monotonic->new(1/1_000);
 cmp_ok($t2->now, '<', 0, 'offset applied successfully pre sleep');
-usleep(1_000);
+usleep(2_000);
 cmp_ok($t2->now, '>', 0, 'offset applied successfully post sleep');
 
 done_testing;
