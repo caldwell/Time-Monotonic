@@ -1,3 +1,9 @@
+Time::Monotonic (0.9.7)
+
+  * Tweak a number to make tests less timing dependent.
+
+ -- David Caldwell <david@porkrind.org>  Tue, 23 Jun 2015 20:12:00 -0700
+
 Time::Monotonic (0.9.6)
 
   * Add OO interface (thanks David Zurborg <port@david-zurb.org>).
