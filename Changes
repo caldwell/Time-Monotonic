@@ -1,3 +1,10 @@
+Time::Monotonic (0.9.8)
+
+  * Use || instead of // to work on older Perls.
+  * Tweak test timing to prevent spurious failures.
+
+ -- David Caldwell <david@porkrind.org>  Thu, 25 Jun 2015 01:00:04 -0700
+
 Time::Monotonic (0.9.7)
 
   * Tweak a number to make tests less timing dependent.
